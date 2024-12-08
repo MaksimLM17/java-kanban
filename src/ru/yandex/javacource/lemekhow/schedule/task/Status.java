@@ -1,4 +1,4 @@
-package Manager;
+package ru.yandex.javacource.lemekhow.schedule.task;
 
 public enum Status {
     NEW,

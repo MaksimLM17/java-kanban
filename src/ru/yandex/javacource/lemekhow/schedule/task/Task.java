@@ -1,23 +1,23 @@
-package Manager;
+package ru.yandex.javacource.lemekhow.schedule.task;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 public class Task {
-    private String nameTask;
+    private String name;
     private String description;
     private Integer id;
     private Status status;
-    public Task(String nameTask, String description, Integer id, Status status) {
-        this.nameTask = nameTask;
+
+    public Task(String name, String description, Integer id, Status status) {
+        this.name = name;
         this.description = description;
         this.id = id;
         this.status = status;
 
     }
 
-    public String getNameTask() {
-        return nameTask;
+    public String getName() {
+        return name;
     }
 
     public String getDescription() {
@@ -27,8 +27,8 @@ public class Task {
         return id;
     }
 
-    public void setNameTask(String nameTask) {
-        this.nameTask = nameTask;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setDescription(String description) {
@@ -63,7 +63,7 @@ public class Task {
     @Override
     public String toString() {
         return "Task{" +
-                "nameTask='" + nameTask + '\'' +
+                "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", id=" + id +
                 ", status=" + status +
