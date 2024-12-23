@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.javacource.lemekhow.schedule.manager.Managers;
 import ru.yandex.javacource.lemekhow.schedule.manager.TaskManager;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {

@@ -57,11 +57,11 @@ class InMemoryTaskManagerTest {
     @Test
     void updateTask() {
         Task task = new Task("Task", "clean window", Status.NEW);
-        taskManager.createTask(task);
-        Task taskUpdate = new Task("Task1", "clean", task.getId(), Status.NEW);
+        int id = taskManager.createTask(task);
+        Task taskUpdate = new Task("Task1", "clean", id, Status.NEW);
 
         taskManager.updateTask(taskUpdate);
-        Task taskAfterUpdate = taskManager.getTaskId(task.getId());
+        Task taskAfterUpdate = taskManager.getTaskId(id);
 
         assertEquals(taskUpdate, taskAfterUpdate, "Объекты не равны");
     }
@@ -83,8 +83,8 @@ class InMemoryTaskManagerTest {
     void addEpic() {
         Epic epic = new Epic("Epic", "Cleaning", Status.NEW);
 
-        taskManager.createEpic(epic);
-        Epic saveEpic = taskManager.getEpicId(1);
+        int id = taskManager.createEpic(epic);
+        Epic saveEpic = taskManager.getEpicId(id);
 
         assertNotNull(saveEpic, "Эпик пуст");
         assertEquals(saveEpic, epic, "Эпики не равны");
@@ -156,10 +156,10 @@ class InMemoryTaskManagerTest {
     @Test
     void updateEpic() {
         Epic epic = new Epic("Epic", "Cleaning", Status.NEW);
-        taskManager.createEpic(epic);
-        Epic epicUpdate = new Epic("Epic1", "Clean", epic.getId(), Status.NEW);
-        Subtask subtask = new Subtask(epic.getId(), "Subtask", "description", Status.NEW);
-        Subtask subtask1 = new Subtask(epic.getId(), "Subtask1", "descrip", Status.DONE);
+        int id = taskManager.createEpic(epic);
+        Epic epicUpdate = new Epic("Epic1", "Clean", id, Status.NEW);
+        Subtask subtask = new Subtask(id, "Subtask", "description", Status.NEW);
+        Subtask subtask1 = new Subtask(id, "Subtask1", "descrip", Status.DONE);
 
         taskManager.createSubtask(subtask);
         taskManager.createSubtask(subtask1);
@@ -175,9 +175,9 @@ class InMemoryTaskManagerTest {
     @Test
     void removeEpicId() {
         Epic epic = new Epic("Epic", "Cleaning", Status.NEW);
-        taskManager.createEpic(epic);
-        Subtask subtask = new Subtask(epic.getId(), "Subtask", "description", Status.NEW);
-        Subtask subtask1 = new Subtask(epic.getId(), "Subtask1", "descrip", Status.DONE);
+        int id = taskManager.createEpic(epic);
+        Subtask subtask = new Subtask(id, "Subtask", "description", Status.NEW);
+        Subtask subtask1 = new Subtask(id, "Subtask1", "descrip", Status.DONE);
 
         taskManager.createSubtask(subtask);
         taskManager.createSubtask(subtask1);
@@ -187,7 +187,7 @@ class InMemoryTaskManagerTest {
         assertFalse(epicsBeforeDelete.isEmpty(), "Список эпиков пуст");
         assertFalse(subtasksBeforeDelete.isEmpty(), "Список подзадач пуст");
 
-        taskManager.removeEpicId(epic.getId());
+        taskManager.removeEpicId(id);
         List<Epic> epicsAfterRemove = taskManager.getEpics();
         List<Subtask> subtaskAfterRemoveEpicId = taskManager.getSubtasks();
 
@@ -198,9 +198,9 @@ class InMemoryTaskManagerTest {
     @Test
     void updateStatusByEpic() {
         Epic epic = new Epic("Epic", "Cleaning", Status.NEW);
-        taskManager.createEpic(epic);
-        Subtask subtask = new Subtask(epic.getId(), "Subtask", "description", Status.NEW);
-        Subtask subtask1 = new Subtask(epic.getId(), "Subtask1", "descrip", Status.DONE);
+        int id = taskManager.createEpic(epic);
+        Subtask subtask = new Subtask(id, "Subtask", "description", Status.NEW);
+        Subtask subtask1 = new Subtask(id, "Subtask1", "descrip", Status.DONE);
 
         taskManager.createSubtask(subtask);
         taskManager.createSubtask(subtask1);
@@ -211,11 +211,11 @@ class InMemoryTaskManagerTest {
     @Test
     void addSubtask() {
         Epic epic = new Epic("Epic", "epicDescp", Status.NEW);
-        taskManager.createEpic(epic);
-        Subtask subtask = new Subtask(epic.getId(), "Subtask", "description", Status.NEW);
+        int idEpic = taskManager.createEpic(epic);
+        Subtask subtask = new Subtask(idEpic, "Subtask", "description", Status.NEW);
 
-        taskManager.createSubtask(subtask);
-        Subtask createdSubtask = taskManager.getSubtaskId(subtask.getId());
+        int idSubtask = taskManager.createSubtask(subtask);
+        Subtask createdSubtask = taskManager.getSubtaskId(idSubtask);
 
         assertNotNull(subtask.getEpicId(), "epicID == null");
         assertNotNull(subtask.getId(), "id == null");
@@ -229,8 +229,8 @@ class InMemoryTaskManagerTest {
     @Test
     void addSubtaskInHashMap() {
         Epic epic = new Epic("Epic", "Cleaning", Status.NEW);
-        taskManager.createEpic(epic);
-        Subtask subtask = new Subtask(epic.getId(), "Subtask", "description", Status.NEW);
+        int idEpic = taskManager.createEpic(epic);
+        Subtask subtask = new Subtask(idEpic, "Subtask", "description", Status.NEW);
 
         taskManager.createSubtask(subtask);
         List<Subtask> subtasks = taskManager.getSubtasks();
@@ -242,9 +242,9 @@ class InMemoryTaskManagerTest {
     @Test
     void removeAllSubtasks() {
         Epic epic = new Epic("Epic", "Cleaning", Status.NEW);
-        taskManager.createEpic(epic);
-        Subtask subtask = new Subtask(epic.getId(), "Subtask", "description", Status.NEW);
-        Subtask subtask1 = new Subtask(epic.getId(), "Subtask1", "descrip", Status.DONE);
+        int idEpic = taskManager.createEpic(epic);
+        Subtask subtask = new Subtask(idEpic, "Subtask", "description", Status.NEW);
+        Subtask subtask1 = new Subtask(idEpic, "Subtask1", "descrip", Status.DONE);
 
         taskManager.createSubtask(subtask);
         taskManager.createSubtask(subtask1);
@@ -263,11 +263,11 @@ class InMemoryTaskManagerTest {
     @Test
     void getSubtaskId(){
         Epic epic = new Epic("Epic", "Cleaning", Status.NEW);
-        taskManager.createEpic(epic);
-        Subtask subtask = new Subtask(epic.getId(), "Subtask", "description", Status.NEW);
+        int idEpic =  taskManager.createEpic(epic);
+        Subtask subtask = new Subtask(idEpic, "Subtask", "description", Status.NEW);
 
-        taskManager.createSubtask(subtask);
-        Subtask subtaskGetId = taskManager.getSubtaskId(subtask.getId());
+        int idSubtask = taskManager.createSubtask(subtask);
+        Subtask subtaskGetId = taskManager.getSubtaskId(idSubtask);
 
         assertNotNull(subtaskGetId, "subtaskGetId == null");
         assertEquals(subtaskGetId, subtask, "Объекты не равны");
@@ -276,11 +276,11 @@ class InMemoryTaskManagerTest {
     @Test
     void updateSubtask() {
         Epic epic = new Epic("Epic", "Cleaning", Status.NEW);
-        taskManager.createEpic(epic);
-        Subtask subtask = new Subtask(epic.getId(), "Subtask", "description", Status.NEW);
-        taskManager.createSubtask(subtask);
-        Subtask subtask1 = new Subtask(epic.getId(), "Subtask1", "descrip",
-                subtask.getId(), Status.DONE);
+        int idEpic = taskManager.createEpic(epic);
+        Subtask subtask = new Subtask(idEpic, "Subtask", "description", Status.NEW);
+        int idSubtask = taskManager.createSubtask(subtask);
+        Subtask subtask1 = new Subtask(idEpic, "Subtask1", "descrip",
+                idSubtask, Status.DONE);
 
         assertSame(epic.getStatus(), Status.NEW, "Статусы не равны");
 
@@ -295,14 +295,14 @@ class InMemoryTaskManagerTest {
     @Test
     void removeSubtaskId() {
         Epic epic = new Epic("Epic", "Cleaning", Status.NEW);
-        taskManager.createEpic(epic);
-        Subtask subtask = new Subtask(epic.getId(), "Subtask", "description", Status.DONE);
+        int idEpic = taskManager.createEpic(epic);
+        Subtask subtask = new Subtask(idEpic, "Subtask", "description", Status.DONE);
 
-        taskManager.createSubtask(subtask);
+        int idSubtask = taskManager.createSubtask(subtask);
 
         assertSame(epic.getStatus(), Status.DONE, "Статусы не равны");
 
-        taskManager.removeSubtaskId(subtask.getId());
+        taskManager.removeSubtaskId(idSubtask);
         List<Subtask> subtasks = taskManager.getSubtasks();
 
         assertTrue(subtasks.isEmpty(), "Список не пуст");
@@ -312,13 +312,13 @@ class InMemoryTaskManagerTest {
     @Test
     void getSubtaskIdByEpic() {
         Epic epic = new Epic("Epic", "Cleaning", Status.NEW);
-        taskManager.createEpic(epic);
-        Subtask subtask = new Subtask(epic.getId(), "Subtask", "description", Status.DONE);
-        Subtask subtask1 = new Subtask(epic.getId(), "Subtask1", "descrip", Status.DONE);
+        int idEpic = taskManager.createEpic(epic);
+        Subtask subtask = new Subtask(idEpic, "Subtask", "description", Status.DONE);
+        Subtask subtask1 = new Subtask(idEpic, "Subtask1", "descrip", Status.DONE);
 
         taskManager.createSubtask(subtask);
         taskManager.createSubtask(subtask1);
-        List<Subtask> subtasksByEpic = taskManager.getSubtasksByEpic(epic.getId());
+        List<Subtask> subtasksByEpic = taskManager.getSubtasksByEpic(idEpic);
 
         assertEquals(2, subtasksByEpic.size(), "Значение неверное");
     }

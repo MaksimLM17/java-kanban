@@ -1,6 +1,5 @@
 package ru.yandex.javacource.lemekhow.schedule;
 
-import ru.yandex.javacource.lemekhow.schedule.manager.HistoryManager;
 import ru.yandex.javacource.lemekhow.schedule.manager.Managers;
 import ru.yandex.javacource.lemekhow.schedule.manager.TaskManager;
 
@@ -9,7 +8,7 @@ import ru.yandex.javacource.lemekhow.schedule.task.Status;
 import ru.yandex.javacource.lemekhow.schedule.task.Subtask;
 import ru.yandex.javacource.lemekhow.schedule.task.Task;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
@@ -45,7 +44,7 @@ public class Main {
         System.out.println(taskManager.getSubtaskId(3));*/
         //taskManager.removeAllEpic();
         //taskManager.removeSubtaskId(3);
-        ArrayList<Task> historyTasks = taskManager.getHistory();
+        List<Task> historyTasks = taskManager.getHistory();
         int index = 0;
         for(Task t : historyTasks) {
             index++;

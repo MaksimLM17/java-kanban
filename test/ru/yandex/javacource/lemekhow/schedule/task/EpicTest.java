@@ -1,10 +1,7 @@
 package ru.yandex.javacource.lemekhow.schedule.task;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.javacource.lemekhow.schedule.manager.Managers;
-import ru.yandex.javacource.lemekhow.schedule.manager.TaskManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +23,7 @@ class EpicTest {
         ArrayList<Integer> expected = new ArrayList<>();
         expected.add(subtask.getId());
         epic.addSubtaskId(subtask.getId());
-        ArrayList<Integer> subtaskIds = epic.getSubtaskIds();
+        List<Integer> subtaskIds = epic.getSubtaskIds();
 
         assertEquals(expected, subtaskIds, "Списки не равны");
     }
@@ -34,7 +31,7 @@ class EpicTest {
     @Test
     void addSubtaskId() {
         epic.addSubtaskId(subtask.getId());
-        ArrayList<Integer> subtaskIds = epic.getSubtaskIds();
+        List<Integer> subtaskIds = epic.getSubtaskIds();
 
         assertTrue(subtaskIds.contains(subtask.getId()), "Id не найдено");
     }
@@ -43,7 +40,7 @@ class EpicTest {
     void removeSubtaskIds() {
         epic.addSubtaskId(subtask.getId());
         epic.removeSubtaskIds(subtask.getId());
-        ArrayList<Integer> subtaskIds = epic.getSubtaskIds();
+        List<Integer> subtaskIds = epic.getSubtaskIds();
 
         assertTrue(subtaskIds.isEmpty(), "Список не пуст");
     }
@@ -55,7 +52,7 @@ class EpicTest {
         epic.addSubtaskId(subtask.getId());
         epic.addSubtaskId(sub.getId());
         epic.clearSubtaskIds();
-        ArrayList<Integer> subtaskIds = epic.getSubtaskIds();
+        List<Integer> subtaskIds = epic.getSubtaskIds();
 
         assertTrue(subtaskIds.isEmpty(), "Список не пуст");
     }

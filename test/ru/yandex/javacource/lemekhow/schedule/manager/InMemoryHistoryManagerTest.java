@@ -7,7 +7,6 @@ import ru.yandex.javacource.lemekhow.schedule.task.Status;
 import ru.yandex.javacource.lemekhow.schedule.task.Subtask;
 import ru.yandex.javacource.lemekhow.schedule.task.Task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -34,9 +33,9 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void add() {
-        taskManager.createTask(task);
-        taskManager.getTaskId(task.getId());
-        ArrayList<Task> historyTask = taskManager.getHistory();
+        int id = taskManager.createTask(task);
+        taskManager.getTaskId(id);
+        List<Task> historyTask = taskManager.getHistory();
 
         assertNotNull(historyTask,"История  пустая");
         assertEquals(1, historyTask.size(),"История  пустая");
@@ -44,13 +43,22 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void valuesHistoryTasksShouldNotBeUpdateAfterUpdateTask() {
-        taskManager.createTask(task);
-        taskManager.getTaskId(task.getId());
-        Task updateTask = new Task("upTask", "upDescription",1,  Status.DONE);
+        int id = taskManager.createTask(task);
+        taskManager.getTaskId(id);
+        Task updateTask = new Task("upTask", "upDescription",id,  Status.DONE);
         taskManager.updateTask(updateTask);
-        ArrayList<Task> history = taskManager.getHistory();
 
-        assertEquals(history.get(0), task, "Объекты не равны");
+        List<Task> history = taskManager.getHistory();
+        Task historyTask = history.get(0);
+        String name = historyTask.getName();
+        String description = historyTask.getDescription();
+        int idTask = historyTask.getId();
+        Status status = historyTask.getStatus();
+
+        assertEquals(name, task.getName(), "Имена не равны");
+        assertEquals(description, task.getDescription(), "Описания не равны");
+        assertEquals(idTask, task.getId(), "Id не равны");
+        assertEquals(status, task.getStatus(), "Статусы не равны");
     }
 
     @Test
@@ -76,5 +84,24 @@ class InMemoryHistoryManagerTest {
         List<Task> historyTasksAfterOverflow = historyManager.getHistory();
 
         assertEquals(historyTasksSize, historyTasksAfterOverflow.size(), "Значения после переполнения не равны");
+    }
+    @Test
+    void valuesHistoryTasksShouldNotBeUpdateAfterUpdateEpic() {
+        int id = taskManager.createEpic(epic);
+        taskManager.getEpicId(id);
+        Epic updateEpic = new Epic("upEpic", "upDescription",id,  Status.NEW);
+        taskManager.updateEpic(updateEpic);
+
+        List<Task> history = taskManager.getHistory();
+        Task historyTask = history.get(0);
+        String name = historyTask.getName();
+        String description = historyTask.getDescription();
+        int idTask = historyTask.getId();
+        Status status = historyTask.getStatus();
+
+        assertEquals(name, epic.getName(), "Имена не равны");
+        assertEquals(description, epic.getDescription(), "Описания не равны");
+        assertEquals(idTask, epic.getId(), "Id не равны");
+        assertEquals(status, epic.getStatus(), "Статусы не равны");
     }
 }

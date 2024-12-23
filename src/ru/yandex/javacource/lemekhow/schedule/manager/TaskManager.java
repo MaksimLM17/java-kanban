@@ -1,23 +1,22 @@
 package ru.yandex.javacource.lemekhow.schedule.manager;
 
 import ru.yandex.javacource.lemekhow.schedule.task.Epic;
-import ru.yandex.javacource.lemekhow.schedule.task.Status;
 import ru.yandex.javacource.lemekhow.schedule.task.Subtask;
 import ru.yandex.javacource.lemekhow.schedule.task.Task;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
 
-    ArrayList<Task> getHistory();
+    List<Task> getHistory();
 
-    ArrayList<Task> getTasks();
+    List<Task> getTasks();
 
-    ArrayList<Epic> getEpics();
+    List<Epic> getEpics();
 
-    ArrayList<Subtask> getSubtasksByEpic(int epicId);
+    List<Subtask> getSubtasksByEpic(int epicId);
 
-    ArrayList<Subtask> getSubtasks();
+    List<Subtask> getSubtasks();
 
     void removeAllTask();
 
@@ -49,7 +48,4 @@ public interface TaskManager {
 
     Subtask removeSubtaskId(int subtaskId);
 
-    Integer generateId();
-
-    void updateEpicStatus(int epicId);
 }

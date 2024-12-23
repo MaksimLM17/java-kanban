@@ -1,9 +1,10 @@
 package ru.yandex.javacource.lemekhow.schedule.task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
-    private ArrayList<Integer> subtaskIds;
+    private List<Integer> subtaskIds;
 
     public Epic(String nameTask, String description, Status status) {
         super(nameTask, description, status);
@@ -15,7 +16,12 @@ public class Epic extends Task {
         subtaskIds = new ArrayList<>();
     }
 
-    public ArrayList<Integer> getSubtaskIds() {
+    public List<Integer> getSubtaskIds() {
+        return subtaskIds;
+    }
+
+    public List<Integer> setSubtasksIds(List<Integer> subtaskIds) {
+        this.subtaskIds = subtaskIds;
         return subtaskIds;
     }
 
