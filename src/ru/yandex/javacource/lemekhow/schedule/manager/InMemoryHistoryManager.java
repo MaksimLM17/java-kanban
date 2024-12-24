@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
-   private final List<Task> history = new ArrayList<>();
-   private final static int MAX_SIZE = 10;
+    private final static int MAX_SIZE = 10;
+    private final List<Task> history = new ArrayList<>();
 
     @Override
     public void add(Task task) {
-        if(task == null) {
+        if (task == null) {
             return;
         }
         if (history.size() == MAX_SIZE) {
