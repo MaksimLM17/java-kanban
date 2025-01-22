@@ -57,7 +57,7 @@ public class Main {
 
         System.out.println(historyTasks);
         int index = 0;
-        for(Task t : historyTasks) {
+        for (Task t : historyTasks) {
             index++;
             System.out.println(index + ". "  + t + ". ");
         }
