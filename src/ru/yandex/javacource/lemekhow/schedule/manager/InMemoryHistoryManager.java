@@ -19,9 +19,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             this.data = data;
             this.next = next;
         }
-        public Node() {
-        }
-
     }
 
     @Override
@@ -34,7 +31,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void remove(int id){
+    public void remove(int id) {
         if (historyTask.containsKey(id)) {
             Node node = historyTask.get(id);
             removeNode(node);
