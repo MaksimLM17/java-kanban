@@ -62,30 +62,6 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void sizeHistoryTasksShouldNotBeMoreTen() {
-        int historyTasksSize = 10;
-
-        historyManager.add(task);
-        historyManager.add(task);
-        historyManager.add(task);
-        historyManager.add(epic);
-        historyManager.add(epic);
-        historyManager.add(epic);
-        historyManager.add(subtask);
-        historyManager.add(subtask);
-        historyManager.add(subtask);
-        historyManager.add(subtask);
-        List<Task> historyTasksSizeTen = historyManager.getHistory();
-
-        assertEquals(historyTasksSize, historyTasksSizeTen.size(), "Значения не равны");
-
-        historyManager.add(task);
-        historyManager.add(subtask);
-        List<Task> historyTasksAfterOverflow = historyManager.getHistory();
-
-        assertEquals(historyTasksSize, historyTasksAfterOverflow.size(), "Значения после переполнения не равны");
-    }
-    @Test
     void valuesHistoryTasksShouldNotBeUpdateAfterUpdateEpic() {
         int id = taskManager.createEpic(epic);
         taskManager.getEpicId(id);

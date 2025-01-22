@@ -323,5 +323,37 @@ class InMemoryTaskManagerTest {
         assertEquals(2, subtasksByEpic.size(), "Значение неверное");
     }
 
+    @Test
+    void inEpicSubtasksIdShouldNotBeUnnecessarySubtaskIdAfterRemoveSubtaskId() {
+        Epic epic = new Epic("Epic", "Cleaning", Status.NEW);
+        taskManager.createEpic(epic);
+        Subtask subtask = new Subtask(epic.getId(), "Subtask", "description", Status.DONE);
+        Subtask subtask1 = new Subtask(epic.getId(), "Subtask1", "descrip", Status.DONE);
+
+        taskManager.createSubtask(subtask);
+        taskManager.createSubtask(subtask1);
+        taskManager.removeSubtaskId(subtask.getId());
+        List<Integer> subtasksId = epic.getSubtaskIds();
+        int idSubtask = subtask1.getId();
+
+        assertEquals(1, subtasksId.size(), "Неверное количество");
+        assertEquals(idSubtask, subtasksId.get(0), "Значения не равны");
+    }
+
+    @Test
+    void getTaskIdShouldNotHaveAccessToChange() {
+        Task task = new Task("Task", "clean window", Status.NEW);
+        taskManager.createTask(task);
+
+        Task changeableTask = taskManager.getTaskId(task.getId());
+        changeableTask.setStatus(Status.IN_PROGRESS);
+        changeableTask.setDescription("Do nothing");
+
+        Task task1 = taskManager.getTaskId(task.getId());
+        assertNotEquals(changeableTask.getDescription(), task1.getDescription(), "Значения равны");
+        assertNotEquals(changeableTask.getStatus(), task1.getStatus(), "Значения равны");
+
+    }
+
 
 }
