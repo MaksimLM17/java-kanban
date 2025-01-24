@@ -48,8 +48,8 @@ public class Main {
         taskManager.getSubtaskId(subtask.getId());
         taskManager.getEpicId(epic1.getId());
         taskManager.getTaskId(task1.getId());
-        //taskManager.removeEpicId(epic1.getId());
-        taskManager.removeAllEpic();
+        // taskManager.removeEpicId(epic1.getId());
+        // taskManager.removeAllEpic();
         System.out.println(epic1.getSubtaskIds());
 
 

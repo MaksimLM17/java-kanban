@@ -2,7 +2,11 @@ package ru.yandex.javacource.lemekhow.schedule.manager;
 
 import ru.yandex.javacource.lemekhow.schedule.task.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 public class InMemoryHistoryManager implements HistoryManager {
     private Map<Integer, Node> historyTask = new HashMap<>();
@@ -32,11 +36,10 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-        if (historyTask.containsKey(id)) {
-            Node node = historyTask.get(id);
-            removeNode(node);
-            historyTask.remove(id);
-        }
+       Node node = historyTask.remove(id);
+       if (node != null) {
+           removeNode(node);
+       }
     }
 
     @Override
@@ -48,20 +51,18 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node node = new Node(null, task, null);
         if (first == null) {
             first = node;
-            historyTask.put(task.getId(), node);
         } else if (last == null) {
             last = node;
             node.prev = first;
             Node firstNode = first;
             firstNode.next = node;
-            historyTask.put(task.getId(), node);
         } else {
             node.prev = last;
             Node lastNode = last;
             lastNode.next = node;
             last = node;
-            historyTask.put(task.getId(), node);
         }
+        historyTask.put(task.getId(), node);
     }
 
     private void removeNode(Node node) {
@@ -84,7 +85,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private List<Task> getTasks() {
-        ArrayList<Task> history = new ArrayList<>();
+        List<Task> history = new ArrayList<>();
         Node currentNode = first;
         while (currentNode != null) {
             history.add(currentNode.data);
