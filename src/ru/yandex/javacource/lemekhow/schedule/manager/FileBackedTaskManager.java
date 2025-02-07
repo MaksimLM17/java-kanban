@@ -12,7 +12,7 @@ import java.util.List;
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
     private final File data;
 
-    public FileBackedTaskManager( File file) {
+    public FileBackedTaskManager(File file) {
         this.data = file;
     }
 
@@ -61,7 +61,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 
     @Override
-    public Integer createSubtask(Subtask subtask)  {
+    public Integer createSubtask(Subtask subtask) {
         Integer subtaskId = super.createSubtask(subtask);
         try {
             save();
@@ -195,7 +195,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         }
     }
 
-    private  Task readFromString(String taskInFile) {
+    private Task readFromString(String taskInFile) {
         String[] split = taskInFile.split(",");
         Integer id = Integer.parseInt(split[0]);
         Status status;
@@ -232,7 +232,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     private int newCounter(List<String> strings) {
         int newCounter = 0;
         for (String str : strings) {
-            String result = str.substring(0,1);
+            String result = str.substring(0, 1);
             int number = Integer.parseInt(result);
             if (number > newCounter) {
                 newCounter = number;
