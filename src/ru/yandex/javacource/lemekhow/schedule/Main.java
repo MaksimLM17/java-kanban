@@ -1,5 +1,6 @@
 package ru.yandex.javacource.lemekhow.schedule;
 
+import ru.yandex.javacource.lemekhow.schedule.manager.FileBackedTaskManager;
 import ru.yandex.javacource.lemekhow.schedule.manager.Managers;
 import ru.yandex.javacource.lemekhow.schedule.manager.TaskManager;
 
@@ -8,12 +9,37 @@ import ru.yandex.javacource.lemekhow.schedule.task.Status;
 import ru.yandex.javacource.lemekhow.schedule.task.Subtask;
 import ru.yandex.javacource.lemekhow.schedule.task.Task;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) {
-        System.out.println("Поехали!");
+    public static void main(String[] args) throws IOException {
+       File file = new File("data.csv");
+       /* FileBackedTaskManager fbtm = (FileBackedTaskManager) Managers.getDefaultFileManager(file);
+        Task task = new Task("Task", "Write file", Status.NEW);
+        fbtm.createTask(task);
+        Epic epic = new Epic("Epic", "Clean home", Status.NEW);
+        fbtm.createEpic(epic);
+        Subtask subtask = new Subtask(epic.getId(), "Subtask", "make homework", Status.DONE);
+        Subtask subtask1 = new Subtask(epic.getId(), "sub", "desc", Status.IN_PROGRESS);
+        fbtm.createSubtask(subtask1);
+        fbtm.createSubtask(subtask); */
+        FileBackedTaskManager fbtm =  FileBackedTaskManager.loadFromFile(file);
+        Task taskNew = new Task("Задача", "Описание", Status.NEW);
+        fbtm.createTask(taskNew);
+        for (Task task : fbtm.getTasks()) {
+            System.out.println(task);
+        }
+        for (Task task : fbtm.getEpics()) {
+            System.out.println(task);
+        }
+        for (Task task : fbtm.getSubtasks()) {
+            System.out.println(task);
+        }
+
+        /*System.out.println("Поехали!");
         TaskManager taskManager = Managers.getDefault();
         Task task = new Task("Hello", "Get up", Status.NEW);
         Epic epic = new Epic("Убраться дома", "Выполнить несколько подзадач",  Status.NEW);
@@ -60,7 +86,7 @@ public class Main {
         for (Task t : historyTasks) {
             index++;
             System.out.println(index + ". "  + t + ". ");
-        }
+        }*/
 
     }
 

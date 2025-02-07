@@ -66,6 +66,13 @@ public class Task {
         return Objects.hashCode(id);
     }
 
+
+
+    public String toStringForFile() {
+        return id + "," + TaskName.TASK + "," + name + "," + status +
+                "," + description;
+    }
+
     @Override
     public String toString() {
         return "Task{" +
