@@ -1,6 +1,6 @@
 package ru.yandex.javacource.lemekhow.schedule.task;
 
-import java.util.Objects; // Это вторая ветка
+import java.util.Objects;
 
 public class Task {
     private String name;
