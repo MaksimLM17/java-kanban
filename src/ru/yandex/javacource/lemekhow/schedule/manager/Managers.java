@@ -13,6 +13,6 @@ public class Managers {
     }
 
     public static TaskManager getDefaultFileManager(File file) {
-        return new FileBackedTaskManager (file);
+        return new FileBackedTaskManager(file);
     }
 }
