@@ -1,6 +1,6 @@
 package ru.yandex.javacource.lemekhow.schedule.task;
 
-public enum TaskName {
+public enum TaskType {
     TASK,
     EPIC,
     SUBTASK

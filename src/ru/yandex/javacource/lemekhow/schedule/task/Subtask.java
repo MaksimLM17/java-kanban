@@ -21,10 +21,9 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
-
-    public String toStringForFile() {
-        return super.getId() + "," + TaskName.SUBTASK + "," + super.getName() + "," + super.getStatus() +
-                "," + super.getDescription() + "," + epicId;
+    @Override
+    public TaskType getType() {
+        return TaskType.SUBTASK;
     }
 
     @Override

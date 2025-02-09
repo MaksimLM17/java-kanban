@@ -37,10 +37,9 @@ public class Epic extends Task {
         subtaskIds.add(subtaskId);
     }
 
-
-    public String toStringForFile() {
-        return super.getId() + "," + TaskName.EPIC + "," + super.getName() + "," + super.getStatus() +
-                "," + super.getDescription();
+    @Override
+    public TaskType getType() {
+        return TaskType.EPIC;
     }
 
     @Override

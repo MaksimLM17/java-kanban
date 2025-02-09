@@ -1,6 +1,5 @@
 id,type,name,status,description,epic
-1,TASK,Task,NEW,Write file
-5,TASK,Задача,NEW,Описание
-2,EPIC,Epic,IN_PROGRESS,Clean home
+1,TASK,Task,NEW,Write file,
+2,EPIC,Epic,IN_PROGRESS,Clean home,
 3,SUBTASK,sub,IN_PROGRESS,desc,2
 4,SUBTASK,Subtask,DONE,make homework,2

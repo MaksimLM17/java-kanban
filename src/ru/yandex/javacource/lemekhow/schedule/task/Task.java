@@ -53,6 +53,10 @@ public class Task {
         this.status = status;
     }
 
+    public TaskType getType() {
+        return TaskType.TASK;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -64,13 +68,6 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
-    }
-
-
-
-    public String toStringForFile() {
-        return id + "," + TaskName.TASK + "," + name + "," + status +
-                "," + description;
     }
 
     @Override
