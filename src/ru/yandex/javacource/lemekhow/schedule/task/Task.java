@@ -125,7 +125,7 @@ public class Task {
                 ", id=" + id +
                 ", status=" + status +
                 ", startTime=" + startTime.format(formatter) +
-                ", duration=" + duration.toHours()+ "ч" + duration.toMinutesPart() + "мин" +
+                ", duration=" + duration.toHours() + "ч" + duration.toMinutesPart() + "мин" +
                 ", endTime=" + getEndTime().format(formatter) +
                 '}';
     }
