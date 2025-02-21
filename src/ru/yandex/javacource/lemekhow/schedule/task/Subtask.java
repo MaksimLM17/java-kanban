@@ -45,7 +45,7 @@ public class Subtask extends Task {
                 ", id=" + super.getId() +
                 ", status=" + super.getStatus() +
                 ", startTime=" + super.getStartTime().format(getFormatter()) +
-                ", duration=" + super.getDuration().toHours() +"ч" + super.getDuration().toMinutesPart() + "мин" +
+                ", duration=" + super.getDuration().toHours() + "ч" + super.getDuration().toMinutesPart() + "мин" +
                 ", endTime=" + super.getEndTime().format(getFormatter()) +
                 '}';
     }
