@@ -30,14 +30,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             lines.removeFirst();
             int [] generatorId = {0};
             lines.stream()
-                    .map(FileBackedTaskManager :: readFromString)
+                    .map(FileBackedTaskManager::readFromString)
                     .peek(task -> {
                         int id = task.getId();
                         if (id > generatorId[0]) {
                             generatorId[0] = id;
                         }
                     })
-                    .forEach(taskManager :: addAnyTask);
+                    .forEach(taskManager::addAnyTask);
 
             taskManager.subtasks.values().forEach(subtask -> {
                 Epic epic = taskManager.epics.get(subtask.getEpicId());
