@@ -57,7 +57,7 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Subtask> getSubtasksByEpic(int epicId) {
         Epic epic = epics.get(epicId);
         return epic.getSubtaskIds().stream()
-                .map(subtasks :: get)
+                .map(subtasks::get)
                 .toList();
     }
 
@@ -354,10 +354,10 @@ public class InMemoryTaskManager implements TaskManager {
                 return;
             }
             Duration durationEpic = subtaskIds.stream()
-                    .map(subtasks :: get)
+                    .map(subtasks::get)
                     .filter(subtask -> subtask != null && subtask.getDuration() != null)
-                    .map(Subtask :: getDuration)
-                    .reduce(Duration.ZERO, Duration :: plus);
+                    .map(Subtask::getDuration)
+                    .reduce(Duration.ZERO, Duration::plus);
 
             epic.setDuration(durationEpic);
         }
