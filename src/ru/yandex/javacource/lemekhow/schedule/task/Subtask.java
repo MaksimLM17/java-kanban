@@ -1,15 +1,25 @@
 package ru.yandex.javacource.lemekhow.schedule.task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Subtask extends Task {
     private Integer epicId;
 
-    public Subtask(Integer epicId, String nameTask, String description, Status status) {
-        super(nameTask, description, status);
+    public Subtask(Integer epicId, String nameTask, String description, Integer id, Status status) {
+        super(nameTask,description, id, status);
         this.epicId = epicId;
     }
 
-    public Subtask(Integer epicId, String nameTask, String description, Integer id, Status status) {
-        super(nameTask,description, id, status);
+    public Subtask(Integer epicId, String name, String description, Integer id,
+                   Status status, LocalDateTime startTime, Duration duration) {
+        super(name, description, id, status, startTime, duration);
+        this.epicId = epicId;
+    }
+
+    public Subtask(Integer epicId, String name, String description,
+                   Status status, LocalDateTime startTime, Duration duration) {
+        super(name, description, status, startTime, duration);
         this.epicId = epicId;
     }
 
@@ -34,6 +44,9 @@ public class Subtask extends Task {
                 ", description='" + super.getDescription() + '\'' +
                 ", id=" + super.getId() +
                 ", status=" + super.getStatus() +
+                ", startTime=" + super.getStartTime().format(getFormatter()) +
+                ", duration=" + super.getDuration().toHours() +"ч" + super.getDuration().toMinutesPart() + "мин" +
+                ", endTime=" + super.getEndTime().format(getFormatter()) +
                 '}';
     }
 }

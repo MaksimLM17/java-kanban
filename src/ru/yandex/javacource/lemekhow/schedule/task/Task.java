@@ -1,5 +1,8 @@
 package ru.yandex.javacource.lemekhow.schedule.task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
@@ -7,6 +10,9 @@ public class Task {
     private String description;
     private Integer id;
     private Status status;
+    private LocalDateTime startTime;
+    private Duration duration;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public Task(String name, String description, Status status) {
         this.name = name;
@@ -19,6 +25,23 @@ public class Task {
         this.description = description;
         this.id = id;
         this.status = status;
+    }
+
+    public Task(String name, String description, Integer id, Status status, LocalDateTime startTime, Duration duration) {
+        this.name = name;
+        this.description = description;
+        this.id = id;
+        this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
+
+    public Task(String name, String description, Status status, LocalDateTime startTime, Duration duration) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
     }
 
     public String getName() {
@@ -57,6 +80,30 @@ public class Task {
         return TaskType.TASK;
     }
 
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return startTime.plus(duration);
+    }
+
+    public DateTimeFormatter getFormatter() {
+        return formatter;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -77,6 +124,9 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", id=" + id +
                 ", status=" + status +
+                ", startTime=" + startTime.format(formatter) +
+                ", duration=" + duration.toHours()+ "ч" + duration.toMinutesPart() + "мин" +
+                ", endTime=" + getEndTime().format(formatter) +
                 '}';
     }
 }

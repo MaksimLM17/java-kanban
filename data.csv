@@ -1,5 +1,5 @@
-id,type,name,status,description,epic
-1,TASK,Task,NEW,Write file,
-2,EPIC,Epic,IN_PROGRESS,Clean home,
-3,SUBTASK,sub,IN_PROGRESS,desc,2
-4,SUBTASK,Subtask,DONE,make homework,2
+id,type,name,status,description,startTime,duration,epicId
+1,TASK,new Name,IN_PROGRESS,dddd,2025-02-18 10:30,390,
+2,EPIC,epic,IN_PROGRESS,epics
+3,SUBTASK,subtask,IN_PROGRESS,sub,2025-02-18 10:30,185,2
+4,SUBTASK,class,DONE,data,2025-02-17 18:55,375,2
