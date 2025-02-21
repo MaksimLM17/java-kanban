@@ -4,17 +4,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.javacource.lemekhow.schedule.manager.Managers;
 import ru.yandex.javacource.lemekhow.schedule.manager.TaskManager;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {
-    private TaskManager taskManager;
     private Task task;
 
     @BeforeEach
     void beforeEach() {
-        taskManager = Managers.getDefault();
-        task = new Task("Task", "Clean home", 1, Status.NEW);
+        TaskManager taskManager = Managers.getDefault();
+        task = new Task("Task", "Clean home", 1, Status.NEW,
+                LocalDateTime.of(2025, 2, 21, 6, 20), Duration.ofMinutes(15));
     }
 
     @Test
@@ -43,6 +46,31 @@ class TaskTest {
         Status status = task.getStatus();
         Status expected = Status.NEW;
         assertEquals(expected, status, "Статусы не совпадают");
+    }
+
+    @Test
+    void getStartTime() {
+        LocalDateTime startTimeReceive = task.getStartTime();
+        LocalDateTime startTime = LocalDateTime.of(2025, 2, 21, 6, 20);
+
+        assertEquals(startTime, startTimeReceive, "Время начала не совпадает");
+
+    }
+
+    @Test
+    void getDuration() {
+        Duration durationReceive = task.getDuration();
+        Duration duration = Duration.ofMinutes(15);
+
+        assertEquals(duration, durationReceive, "Продолжительность не совпадает");
+    }
+
+    @Test
+    void getEndTime() {
+        LocalDateTime endTimeReceive = task.getEndTime();
+        LocalDateTime endTime = LocalDateTime.of(2025, 2, 21, 6, 20).plusMinutes(15);
+
+        assertEquals(endTime, endTimeReceive, "Время окончания не совпадает");
     }
 
     @Test
@@ -83,6 +111,24 @@ class TaskTest {
     }
 
     @Test
+    void setStartTime() {
+        LocalDateTime setupStartTime = LocalDateTime.of(2025, 2, 20, 8, 20);
+        task.setStartTime(setupStartTime);
+        LocalDateTime startTimeTask = task.getStartTime();
+
+        assertEquals(startTimeTask, setupStartTime, "Измененное время начала не совпадает");
+    }
+
+    @Test
+    void setDuration() {
+        Duration setupDuration = Duration.ofMinutes(25);
+        task.setDuration(setupDuration);
+        Duration durationTask = task.getDuration();
+
+        assertEquals(durationTask, setupDuration, "Продолжительность после изменения не совпадает");
+    }
+
+    @Test
     void equals() {
         Task task1 = new Task("task1", "have a dinner",1, Status.IN_PROGRESS );
         boolean actually = task.equals(task1);
@@ -100,9 +146,16 @@ class TaskTest {
 
     @Test
     void testToString() {
-        String expected = "Task{" + "name='" + task.getName() + '\''
-                + ", description='" + task.getDescription() + '\''
-                + ", id=" + task.getId() + ", status=" + task.getStatus() + "}";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String expected = "Task{" +
+                "name='" + task.getName() + '\'' +
+                ", description='" + task.getDescription() + '\'' +
+                ", id=" + task.getId() +
+                ", status=" + task.getStatus() +
+                ", startTime=" + task.getStartTime().format(formatter) +
+                ", duration=" + task.getDuration().toHours() + "ч" + task.getDuration().toMinutesPart() + "мин" +
+                ", endTime=" + task.getEndTime().format(formatter) +
+                '}';
         String taskToString = task.toString();
 
         assertEquals(expected, taskToString, "toString не равен");
