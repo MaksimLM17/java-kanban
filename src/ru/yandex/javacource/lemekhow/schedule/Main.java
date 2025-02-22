@@ -1,27 +1,23 @@
 package ru.yandex.javacource.lemekhow.schedule;
 
-import ru.yandex.javacource.lemekhow.schedule.manager.FileBackedTaskManager;
-import ru.yandex.javacource.lemekhow.schedule.task.Epic;
-import ru.yandex.javacource.lemekhow.schedule.task.Subtask;
+import ru.yandex.javacource.lemekhow.schedule.manager.Managers;
+import ru.yandex.javacource.lemekhow.schedule.manager.TaskManager;
+import ru.yandex.javacource.lemekhow.schedule.task.Status;
 import ru.yandex.javacource.lemekhow.schedule.task.Task;
-
-import java.io.File;
-import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 
 public class Main {
-
-    public static void main(String[] args) throws IOException {
-       File file = new File("data.csv");
-        FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile(file);
-        for (Task tasks : taskManager.getTasks()) {
-            System.out.println(tasks);
-        }
-        for (Epic epic : taskManager.getEpics()) {
-            System.out.println(epic);
-        }
-        for (Subtask subtask2 : taskManager.getSubtasks()) {
-            System.out.println(subtask2);
-        }
+    public static void main(String[] args)  {
+        TaskManager manager = Managers.getDefault();
+        manager.createTask(new Task("name", "fff", 2, Status.NEW,
+                        LocalDateTime.of(2014,8, 15,14, 20),
+                        Duration.ofMinutes(356)));
+        manager.updateTask(new Task("new Name", "dddd",1, Status.IN_PROGRESS,
+                LocalDateTime.of(2025, 2, 18, 10, 30), Duration.ofMinutes(390)));
+        System.out.println(manager.getPrioritizedTasks());
+        System.out.println("--------------------------");
+        System.out.println(manager.getTasks());
     }
 }
