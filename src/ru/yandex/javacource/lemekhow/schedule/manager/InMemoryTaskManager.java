@@ -20,9 +20,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     public void fullUpdateEpic(int epicId) {
         updateEpicStatus(epicId);
-        updateStartTimeEpic(epicId);
-        updateDurationEpic(epicId);
-        updateEndTimeEpic(epicId);
+        updateTimeEpic(epicId);
     }
 
     public void addTaskPriority(Task task) throws InvalidTimeException {
@@ -162,14 +160,10 @@ public class InMemoryTaskManager implements TaskManager {
     public int createTask(Task task) {
         Integer newId = generateId();
         task.setId(newId);
-        tasks.put(task.getId(), task);
-        try {
-            if (task.getStartTime() != null) {
-                addTaskPriority(task);
-            }
-        } catch (InvalidTimeException e) {
-            System.err.println(e.getMessage());
+        if (task.getStartTime() != null) {
+            addTaskPriority(task);
         }
+        tasks.put(task.getId(), task);
         return task.getId();
     }
 
@@ -179,7 +173,6 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setId(newId);
         epics.put(epic.getId(), epic);
         return epic.getId();
-
     }
 
     @Override
@@ -191,14 +184,10 @@ public class InMemoryTaskManager implements TaskManager {
         }
         Integer newId = generateId();
         subtask.setId(newId);
-        subtasks.put(subtask.getId(), subtask);
-        try {
-            if (subtask.getStartTime() != null) {
-                addTaskPriority(subtask);
-            }
-        } catch (InvalidTimeException e) {
-            System.err.println(e.getMessage());
+        if (subtask.getStartTime() != null) {
+            addTaskPriority(subtask);
         }
+        subtasks.put(subtask.getId(), subtask);
         epic.addSubtaskId(subtask.getId());
         fullUpdateEpic(epicId);
         epics.put(epic.getId(), epic);
@@ -325,59 +314,35 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private void updateStartTimeEpic(int epicId) {
+    private void updateTimeEpic(int epicId) {
         if (epics.containsKey(epicId)) {
             Epic epic = epics.get(epicId);
             List<Integer> subtaskIds = epic.getSubtaskIds();
             if (subtaskIds.isEmpty()) {
                 return;
             }
-
-            LocalDateTime startTime = subtaskIds.stream()
+            List<Subtask> filterSubtask = subtaskIds.stream()
                     .map(subtasks::get)
                     .filter(subtask -> subtask != null && subtask.getStartTime() != null)
+                    .toList();
+            if (filterSubtask.isEmpty()) {
+                return;
+            }
+            LocalDateTime start = filterSubtask.stream()
                     .map(Subtask::getStartTime)
                     .min(LocalDateTime::compareTo)
                     .orElse(null);
+            epic.setStartTime(start);
 
-            epic.setStartTime(startTime);
-        }
-
-    }
-
-    private void updateDurationEpic(int epicId) {
-        if (epics.containsKey(epicId)) {
-            Epic epic = epics.get(epicId);
-            List<Integer> subtaskIds = epic.getSubtaskIds();
-            if (subtaskIds.isEmpty()) {
-                epic.setDuration(Duration.ZERO);
-                return;
-            }
-            Duration durationEpic = subtaskIds.stream()
-                    .map(subtasks::get)
-                    .filter(subtask -> subtask != null && subtask.getDuration() != null)
+            Duration duration = filterSubtask.stream()
                     .map(Subtask::getDuration)
                     .reduce(Duration.ZERO, Duration::plus);
+            epic.setDuration(duration);
 
-            epic.setDuration(durationEpic);
-        }
-    }
-
-    private void updateEndTimeEpic(int epicId) {
-        if (epics.containsKey(epicId)) {
-            Epic epic = epics.get(epicId);
-            List<Integer> subtaskIds = epic.getSubtaskIds();
-            if (subtaskIds.isEmpty()) {
-                return;
-            }
-
-            LocalDateTime endTime = subtaskIds.stream()
-                    .map(subtasks::get)
-                    .filter(subtask -> subtask != null && subtask.getEndTime() != null)
+            LocalDateTime endTime = filterSubtask.stream()
                     .map(Subtask::getEndTime)
                     .max(LocalDateTime::compareTo)
                     .orElse(null);
-
             epic.setEndTime(endTime);
         }
     }
