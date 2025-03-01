@@ -10,6 +10,8 @@ import ru.yandex.javacource.lemekhow.schedule.task.Task;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class FileBackedTaskManagerTest {
     private TaskManager fileManager;
@@ -29,24 +31,36 @@ public class FileBackedTaskManagerTest {
             throw new RuntimeException(e);
         }
 
-        task = new Task("Task", "clean window", 1, Status.NEW);
-        task1 = new Task("TaskName", "test", 4, Status.IN_PROGRESS);
-        epic = new Epic("Epic", "Going", 2, Status.NEW);
-        epic1 = new Epic("EpicTest", "Pass the test", 5, Status.NEW);
-        subtask = new Subtask(2, "Subtask", "go to the park", 3, Status.IN_PROGRESS);
-        subtask1 = new Subtask(2, "SubtaskTest", "go to the street", 6, Status.DONE);
+        task = new Task("Task", "clean window", Status.NEW,
+                LocalDateTime.of(2025, 2, 20, 6, 40), Duration.ofMinutes(50));
+
+        task1 = new Task("Task1", "clean", Status.IN_PROGRESS,
+                LocalDateTime.of(2025, 2, 20, 8, 55), Duration.ofMinutes(300));
+
+        epic = new Epic("Epic", "Cleaning",3, Status.NEW,
+                LocalDateTime.of(2025, 2, 21, 9, 53), Duration.ofMinutes(50),
+                LocalDateTime.of(2025, 2, 21, 10, 43));
+
+        epic1 = new Epic("Epic1", "Clean", Status.NEW,
+                LocalDateTime.of(2025, 2, 21, 10, 59), Duration.ofMinutes(50));
+
+        subtask = new Subtask(2, "subtask", "sub", Status.IN_PROGRESS,
+                LocalDateTime.of(2025, 2, 18, 10, 30), Duration.ofMinutes(185));
+
+        subtask1 = new Subtask(2, "Subtask1", "descrip", Status.DONE,
+                LocalDateTime.of(2025, 2, 20, 14, 30), Duration.ofMinutes(190));
+
         fileManager = new FileBackedTaskManager(tempFile);
     }
 
     @Test
     void loadFromFileTest() {
         fileManager.createTask(task);
-        fileManager.createTask(task1);
         fileManager.createEpic(epic);
-        fileManager.createEpic(epic1);
+        fileManager.createTask(task1);
         fileManager.createSubtask(subtask);
         fileManager.createSubtask(subtask1);
-        TaskManager loadManager =  FileBackedTaskManager.loadFromFile(tempFile);
+        TaskManager loadManager = FileBackedTaskManager.loadFromFile(tempFile);
 
         String actually = fileManager.getTasks() + " " +  fileManager.getEpics() +  " " + fileManager.getSubtasks();
         String expected = loadManager.getTasks() + " " + loadManager.getEpics() + " " + loadManager.getSubtasks();
@@ -122,7 +136,9 @@ public class FileBackedTaskManagerTest {
 
     @Test
     void updateEpicTest() {
+        fileManager.createTask(task);
         fileManager.createEpic(epic);
+        fileManager.createSubtask(subtask);
         Epic testEpic = fileManager.getEpicId(epic.getId());
         testEpic.setName("New name");
         fileManager.updateEpic(testEpic);
@@ -136,9 +152,11 @@ public class FileBackedTaskManagerTest {
 
     @Test
     void removeEpicIdTest() {
+        fileManager.createTask(task);
         fileManager.createEpic(epic);
         fileManager.createEpic(epic1);
         fileManager.removeEpicId(epic1.getId());
+        fileManager.createSubtask(subtask);
 
         TaskManager loadManager =  FileBackedTaskManager.loadFromFile(tempFile);
         String actual = fileManager.getEpics().toString();
@@ -193,9 +211,9 @@ public class FileBackedTaskManagerTest {
     void removeSubtaskIdTest() {
         fileManager.createTask(task);
         fileManager.createEpic(epic);
-        fileManager.createSubtask(subtask);
+        int id = fileManager.createSubtask(subtask);
         fileManager.createSubtask(subtask1);
-        fileManager.removeSubtaskId(subtask.getId());
+        fileManager.removeSubtaskId(id);
 
         TaskManager loadManager =  FileBackedTaskManager.loadFromFile(tempFile);
         String actual = fileManager.getSubtasks().toString();

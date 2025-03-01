@@ -1,18 +1,28 @@
 package ru.yandex.javacource.lemekhow.schedule.task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
     private List<Integer> subtaskIds;
-
-    public Epic(String nameTask, String description, Status status) {
-        super(nameTask, description, status);
-        subtaskIds = new ArrayList<>();
-    }
+    private LocalDateTime endTime;
 
     public Epic(String nameTask, String description, Integer id, Status status) {
         super(nameTask, description, id, status);
+        subtaskIds = new ArrayList<>();
+    }
+
+    public Epic(String name, String description, Status status, LocalDateTime startTime, Duration duration) {
+        super(name, description, status, startTime, duration);
+        subtaskIds = new ArrayList<>();
+    }
+
+    public Epic(String name, String description,Integer id, Status status,
+                LocalDateTime startTime, Duration duration, LocalDateTime endTime) {
+        super(name, description,id, status, startTime, duration);
+        this.endTime = endTime;
         subtaskIds = new ArrayList<>();
     }
 
@@ -20,9 +30,8 @@ public class Epic extends Task {
         return subtaskIds;
     }
 
-    public List<Integer> setSubtasksIds(List<Integer> subtaskIds) {
+    public void setSubtasksIds(List<Integer> subtaskIds) {
         this.subtaskIds = subtaskIds;
-        return subtaskIds;
     }
 
     public void removeSubtaskIds(Integer subtaskId) {
@@ -37,9 +46,18 @@ public class Epic extends Task {
         subtaskIds.add(subtaskId);
     }
 
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
     @Override
     public TaskType getType() {
         return TaskType.EPIC;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
     }
 
     @Override
@@ -50,6 +68,9 @@ public class Epic extends Task {
                 ", id=" + super.getId() +
                 ", status=" + super.getStatus() +
                 ", subtasksIds=" + subtaskIds +
+                ", startTime=" + super.getStartTime().format(getFormatter()) +
+                ", duration=" + super.getDuration().toHours() + "ч" + super.getDuration().toMinutesPart() + "мин" +
+                ", endTime=" + endTime.format(getFormatter()) +
                 '}';
     }
 }

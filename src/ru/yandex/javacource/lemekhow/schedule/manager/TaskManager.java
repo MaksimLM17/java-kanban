@@ -5,6 +5,7 @@ import ru.yandex.javacource.lemekhow.schedule.task.Subtask;
 import ru.yandex.javacource.lemekhow.schedule.task.Task;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
 
@@ -48,4 +49,5 @@ public interface TaskManager {
 
     Subtask removeSubtaskId(int subtaskId);
 
+    Set<Task> getPrioritizedTasks();
 }

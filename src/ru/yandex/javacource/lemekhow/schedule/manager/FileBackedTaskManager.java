@@ -1,5 +1,6 @@
 package ru.yandex.javacource.lemekhow.schedule.manager;
 
+import ru.yandex.javacource.lemekhow.schedule.Exception.InvalidTimeException;
 import ru.yandex.javacource.lemekhow.schedule.Exception.ManagerInitializationException;
 import ru.yandex.javacource.lemekhow.schedule.Exception.ManagerSaveException;
 import ru.yandex.javacource.lemekhow.schedule.task.*;
@@ -7,13 +8,16 @@ import ru.yandex.javacource.lemekhow.schedule.task.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File data;
-    private static final String HEADER = "id,type,name,status,description,epic";
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final String HEADER = "id,type,name,status,description,startTime,duration,epicId";
 
     public FileBackedTaskManager(File file) {
         this.data = file;
@@ -24,31 +28,39 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try {
             List<String> lines = Files.readAllLines(file.toPath());
             lines.removeFirst();
-            int generatorId = 0;
-            for (String line : lines) {
-                final Task task = readFromString(line);
-                final int id = task.getId();
-                if (id > generatorId) {
-                    generatorId = id;
-                }
-                taskManager.addAnyTask(task);
-            }
-            for (Map.Entry<Integer, Subtask> subtaskEntry : taskManager.subtasks.entrySet()) {
-                final Subtask subtask = subtaskEntry.getValue();
-                final Epic epic = taskManager.epics.get(subtask.getEpicId());
+            int [] generatorId = {0};
+            lines.stream()
+                    .map(FileBackedTaskManager::readFromString)
+                    .peek(task -> {
+                        int id = task.getId();
+                        if (id > generatorId[0]) {
+                            generatorId[0] = id;
+                        }
+                    })
+                    .forEach(taskManager::addAnyTask);
+
+            taskManager.subtasks.values().forEach(subtask -> {
+                Epic epic = taskManager.epics.get(subtask.getEpicId());
                 epic.addSubtaskId(subtask.getId());
-            }
-            taskManager.counter = generatorId;
+                taskManager.fullUpdateEpic(epic.getId());
+            });
+            taskManager.counter = generatorId[0];
         } catch (IOException e) {
             throw new ManagerInitializationException("Can't read form file: " + file.getName(), e);
         }
         return taskManager;
     }
 
-    public String toString(Task task) {
+    public String toStringInFile(Task task) {
         return task.getId() + "," + task.getType() + "," + task.getName() + ","
                 + task.getStatus() + "," + task.getDescription() + ","
-                + (task.getType().equals(TaskType.SUBTASK) ? ((Subtask) task).getEpicId() : "");
+                 + task.getStartTime().format(formatter) + "," + task.getDuration().toMinutes() + ","
+                 + (task.getType().equals(TaskType.SUBTASK) ? ((Subtask) task).getEpicId() : "");
+    }
+
+    public String toStringForEpic(Task task) {
+        return task.getId() + "," + task.getType() + "," + task.getName() + ","
+                + task.getStatus() + "," + task.getDescription();
     }
 
     @Override
@@ -132,15 +144,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private void save() {
         List<String> dataInFile = new ArrayList<>();
         dataInFile.add(HEADER);
-        for (Task task : getTasks()) {
-            dataInFile.add(toString(task));
-        }
-        for (Epic epic : getEpics()) {
-            dataInFile.add(toString(epic));
-        }
-        for (Subtask subtask : getSubtasks()) {
-            dataInFile.add(toString(subtask));
-        }
+
+        getTasks().forEach(task ->
+                dataInFile.add(toStringInFile(task)));
+
+        getEpics().forEach(epic ->
+                dataInFile.add(toStringForEpic(epic)));
+
+        getSubtasks().forEach(subtask ->
+                dataInFile.add(toStringInFile(subtask)));
+
         try {
             saveToFile(dataInFile);
         } catch (IOException e) {
@@ -170,18 +183,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             status = Status.IN_PROGRESS;
         }
 
-        if (split.length == 6) {
-            Integer epicId = Integer.parseInt(split[5]);
-            Subtask subtask = new Subtask(epicId, split[2], split[4], id, status);
-            return subtask;
+        if (split[1].equals("EPIC")) {
+            return new Epic(split[2], split[4], id, status);
         }
 
-        if (split[1].equals("TASK")) {
-            Task task = new Task(split[2], split[4], id, status);
-            return task;
+        long minutes = Long.parseLong(split[6]);
+        Duration duration = Duration.ofMinutes(minutes);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime startTime = LocalDateTime.parse(split[5], formatter);
+
+
+        if (split[1].equals("SUBTASK")) {
+            Integer epicId = Integer.parseInt(split[7]);
+            return new Subtask(epicId, split[2], split[4], id, status, startTime, duration);
         } else {
-            Epic epic = new Epic(split[2], split[4], id, status);
-            return epic;
+            return new Task(split[2], split[4], id, status, startTime, duration);
         }
     }
 
@@ -190,9 +206,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         switch (task.getType()) {
             case TASK:
                 tasks.put(id, task);
+                try {
+                    if (task.getStartTime() != null) {
+                        addTaskPriority(task);
+                    }
+                } catch (InvalidTimeException e) {
+                    System.err.println(e.getMessage());
+                }
                 break;
             case SUBTASK:
                 subtasks.put(id, (Subtask) task);
+                try {
+                    if (task.getStartTime() != null) {
+                        addTaskPriority(task);
+                    }
+                } catch (InvalidTimeException e) {
+                    System.err.println(e.getMessage());
+                }
                 break;
             case EPIC:
                 epics.put(id, (Epic) task);
