@@ -116,7 +116,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void updateEpic(Epic epic)  {
         try {
             super.updateTask(epic);
-        } catch (NotFoundException ignored){
+        } catch (NotFoundException ignored) {
 
         }
 
