@@ -192,7 +192,7 @@ public class HttpEpicHandler extends BaseHttpHandler {
             try {
                 List<Subtask> subtasks = manager.getSubtasksByEpic(id);
                 String response = gson.toJson(subtasks);
-                writeResponse(exchange, response, HttpURLConnection.HTTP_OK );
+                writeResponse(exchange, response, HttpURLConnection.HTTP_OK);
             } catch (NotFoundException e) {
                 writeResponse(exchange, "По переданному id = " + id + " эпик не найден",
                         HttpURLConnection.HTTP_NOT_FOUND);
