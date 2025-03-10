@@ -129,8 +129,8 @@ public class HttpSubtaskHandler extends BaseHttpHandler {
                     writeResponse(exchange, "Пересечение задач по времени выполнения, невозможно добавить подзадачу",
                             HttpURLConnection.HTTP_NOT_ACCEPTABLE);
                 } catch (NotFoundEpicException e) {
-                    writeResponse(exchange, "Передан несуществующий эпик, невозможно создать подзадачу вне эпика"
-                            , HttpURLConnection.HTTP_NOT_FOUND);
+                    writeResponse(exchange, "Передан несуществующий эпик, невозможно создать подзадачу вне эпика",
+                            HttpURLConnection.HTTP_NOT_FOUND);
                 }
             } else {
                 writeResponse(exchange, "Получен пустой запрос для создания подзадачи",
@@ -163,8 +163,8 @@ public class HttpSubtaskHandler extends BaseHttpHandler {
                                 "Пересечение задач по времени выполнения, невозможно обновить подзадачу",
                                 HttpURLConnection.HTTP_NOT_ACCEPTABLE);
                     } catch (NotFoundEpicException e) {
-                        writeResponse(exchange, "Передан несуществующий эпик, невозможно обновить подзадачу вне эпика"
-                                , HttpURLConnection.HTTP_NOT_FOUND);
+                        writeResponse(exchange, "Передан несуществующий эпик, невозможно обновить подзадачу вне эпика",
+                                HttpURLConnection.HTTP_NOT_FOUND);
                     }
                 } else {
                     writeResponse(exchange, "Получен пустой запрос для обновления подзадачи",
