@@ -26,7 +26,7 @@ public class HttpPriorityHandler extends BaseHttpHandler {
                 writeResponse(exchange, "Обработка данного метода невозможна, переданный метод " +
                         exchange.getRequestMethod(), HttpURLConnection.HTTP_BAD_METHOD);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             String responseError = e.getMessage();
             System.out.println(responseError);
             writeResponse(exchange, responseError, HttpURLConnection.HTTP_INTERNAL_ERROR);
@@ -35,6 +35,7 @@ public class HttpPriorityHandler extends BaseHttpHandler {
         }
 
     }
+
     private void getPrioritized(HttpExchange exchange) throws IOException {
         try {
             Set<Task> priority = manager.getPrioritizedTasks();
