@@ -30,9 +30,10 @@ public class GsonManager {
             if (localDateTime == null) {
                 jsonWriter.value(0);
             } else {
-            jsonWriter.value(localDateTime.format(formatter));
+                jsonWriter.value(localDateTime.format(formatter));
+            }
         }
-}
+
         @Override
         public LocalDateTime read(JsonReader jsonReader) throws IOException {
             if (jsonReader.peek() == JsonToken.NULL) {
