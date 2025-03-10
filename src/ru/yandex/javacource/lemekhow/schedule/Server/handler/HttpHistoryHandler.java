@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
 
-public class HttpHistoryHandler extends BaseHttpHandler{
+public class HttpHistoryHandler extends BaseHttpHandler {
 
     public HttpHistoryHandler(TaskManager manager) {
         super(manager);
