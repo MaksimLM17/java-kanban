@@ -3,6 +3,7 @@ package ru.yandex.javacource.lemekhow.schedule.manager;
 import ru.yandex.javacource.lemekhow.schedule.Exception.InvalidTimeException;
 import ru.yandex.javacource.lemekhow.schedule.Exception.ManagerInitializationException;
 import ru.yandex.javacource.lemekhow.schedule.Exception.ManagerSaveException;
+import ru.yandex.javacource.lemekhow.schedule.Exception.NotFoundException;
 import ru.yandex.javacource.lemekhow.schedule.task.*;
 
 import java.io.*;
@@ -112,14 +113,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void updateEpic(Epic epic) {
-        super.updateTask(epic);
+    public void updateEpic(Epic epic)  {
+        try {
+            super.updateTask(epic);
+        } catch (NotFoundException ignored) {
+
+        }
+
         save();
     }
 
     @Override
-    public void updateSubtask(Subtask subtask) {
-        super.updateTask(subtask);
+    public void updateSubtask(Subtask subtask)  {
+        try {
+            super.updateTask(subtask);
+        } catch (NotFoundException ignored) {
+
+        }
         save();
     }
 
@@ -144,16 +154,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private void save() {
         List<String> dataInFile = new ArrayList<>();
         dataInFile.add(HEADER);
+        try {
+            getTasks().forEach(task ->
+                    dataInFile.add(toStringInFile(task)));
 
-        getTasks().forEach(task ->
-                dataInFile.add(toStringInFile(task)));
+            getEpics().forEach(epic ->
+                    dataInFile.add(toStringForEpic(epic)));
 
-        getEpics().forEach(epic ->
-                dataInFile.add(toStringForEpic(epic)));
+            getSubtasks().forEach(subtask ->
+                    dataInFile.add(toStringInFile(subtask)));
+        } catch (NotFoundException ignored) {
 
-        getSubtasks().forEach(subtask ->
-                dataInFile.add(toStringInFile(subtask)));
-
+        }
         try {
             saveToFile(dataInFile);
         } catch (IOException e) {

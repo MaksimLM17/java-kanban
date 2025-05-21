@@ -40,5 +40,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="google.code.gson" level="project" />
+    <orderEntry type="library" name="google.code.gson1" level="project" />
   </component>
 </module>

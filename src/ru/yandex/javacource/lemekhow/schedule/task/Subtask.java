@@ -2,6 +2,7 @@ package ru.yandex.javacource.lemekhow.schedule.task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Subtask extends Task {
     private Integer epicId;
@@ -38,15 +39,16 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         return "Subtask{" +
                 "epicId=" + epicId +
                 ", name='" + super.getName() + '\'' +
                 ", description='" + super.getDescription() + '\'' +
                 ", id=" + super.getId() +
                 ", status=" + super.getStatus() +
-                ", startTime=" + super.getStartTime().format(getFormatter()) +
+                ", startTime=" + super.getStartTime().format(formatter) +
                 ", duration=" + super.getDuration().toHours() + "ч" + super.getDuration().toMinutesPart() + "мин" +
-                ", endTime=" + super.getEndTime().format(getFormatter()) +
+                ", endTime=" + super.getEndTime().format(formatter) +
                 '}';
     }
 }

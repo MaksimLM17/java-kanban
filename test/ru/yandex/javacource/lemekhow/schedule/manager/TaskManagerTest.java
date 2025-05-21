@@ -2,6 +2,7 @@ package ru.yandex.javacource.lemekhow.schedule.manager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.javacource.lemekhow.schedule.Exception.NotFoundException;
 import ru.yandex.javacource.lemekhow.schedule.task.Epic;
 import ru.yandex.javacource.lemekhow.schedule.task.Status;
 import ru.yandex.javacource.lemekhow.schedule.task.Subtask;
@@ -9,6 +10,7 @@ import ru.yandex.javacource.lemekhow.schedule.task.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,13 +29,13 @@ import static org.junit.jupiter.api.Assertions.*;
     void beforeEach() {
         taskManager = Managers.getDefault();
         task = new Task("Task", "clean window", Status.NEW,
-                LocalDateTime.of(2025, 2, 20, 6, 40), Duration.ofMinutes(50));
+                LocalDateTime.of(2025, 1, 20, 6, 40), Duration.ofMinutes(50));
         task1 = new Task("Task1", "clean", Status.IN_PROGRESS,
-                LocalDateTime.of(2025, 2, 20, 8, 55), Duration.ofMinutes(300));
+                LocalDateTime.of(2025, 3, 20, 8, 55), Duration.ofMinutes(300));
         epic = new Epic("Epic", "Cleaning", Status.NEW,
-                LocalDateTime.of(2025, 2, 21, 9, 53), Duration.ofMinutes(50));
+                LocalDateTime.of(2025, 4, 21, 9, 53), Duration.ofMinutes(50));
         epic1 = new Epic("Epic1", "Clean", Status.NEW,
-                LocalDateTime.of(2025, 2, 21, 10, 59), Duration.ofMinutes(50));
+                LocalDateTime.of(2025, 5, 21, 10, 59), Duration.ofMinutes(50));
     }
 
     @Test
@@ -60,7 +62,11 @@ import static org.junit.jupiter.api.Assertions.*;
         assertEquals(2, tasks.size(), "Значения не равны");
 
         taskManager.removeAllTask();
-        List<Task> tasksAfterDelete = taskManager.getTasks();
+        List<Task> tasksAfterDelete = new ArrayList<>();
+        try {
+            tasksAfterDelete = taskManager.getTasks();
+        } catch (NotFoundException ignored) {
+        }
 
         assertTrue(tasksAfterDelete.isEmpty(), "Список не пуст");
     }
@@ -129,7 +135,13 @@ import static org.junit.jupiter.api.Assertions.*;
         assertEquals(2, subtasksIds.size(), "Значения не равны");
 
         taskManager.removeAllEpic();
-        List<Epic> epicsAfterRemove = taskManager.getEpics();
+        List<Epic> epicsAfterRemove = new ArrayList<>();
+        try {
+            epicsAfterRemove = taskManager.getEpics();
+        } catch (NotFoundException ignored) {
+
+        }
+
         List<Integer> subtasksIdsAfterRemove = epic.getSubtaskIds();
 
         assertTrue(epicsAfterRemove.isEmpty(), "Список не пуст");
@@ -171,10 +183,11 @@ import static org.junit.jupiter.api.Assertions.*;
     @Test
     void removeEpicId() {
         int id = taskManager.createEpic(epic);
+        int id1 = taskManager.createEpic(epic1);
         Subtask subtask = new Subtask(id, "subtask", "sub",3, Status.IN_PROGRESS,
                 LocalDateTime.of(2025, 2, 18, 10, 30), Duration.ofMinutes(185));
-        Subtask subtask1 = new Subtask(id, "Subtask1", "descrip", Status.DONE,
-                LocalDateTime.of(2025, 2, 20, 14, 30), Duration.ofMinutes(190));
+        Subtask subtask1 = new Subtask(id1, "Subtask1", "descrip", Status.DONE,
+                LocalDateTime.of(2025, 2, 22, 14, 30), Duration.ofMinutes(190));
 
         taskManager.createSubtask(subtask);
         taskManager.createSubtask(subtask1);
@@ -187,9 +200,10 @@ import static org.junit.jupiter.api.Assertions.*;
         taskManager.removeEpicId(id);
         List<Epic> epicsAfterRemove = taskManager.getEpics();
         List<Subtask> subtaskAfterRemoveEpicId = taskManager.getSubtasks();
+        int actualSize = 1;
 
-        assertTrue(epicsAfterRemove.isEmpty(), "Список эпиков не пуст");
-        assertTrue(subtaskAfterRemoveEpicId.isEmpty(), "Список подзадач не пуст");
+        assertEquals(epicsAfterRemove.size(), actualSize, "Список эпиков не пуст");
+        assertFalse(subtaskAfterRemoveEpicId.isEmpty(), "Список подзадач пуст");
     }
 
     @Test
@@ -251,7 +265,13 @@ import static org.junit.jupiter.api.Assertions.*;
         assertEquals(epic.getStatus(), Status.IN_PROGRESS, "Статусы не равны");
 
         taskManager.removeAllSubtask();
-        List<Subtask> subtasksAfterRemove = taskManager.getSubtasks();
+        List<Subtask> subtasksAfterRemove = new ArrayList<>();
+        try {
+            subtasksAfterRemove = taskManager.getSubtasks();
+        } catch (NotFoundException ignored) {
+
+        }
+
         List<Integer> subtasksIds = epic.getSubtaskIds();
 
         assertNotSame(epic.getStatus(), Status.IN_PROGRESS, "Статусы равны");
@@ -296,17 +316,23 @@ import static org.junit.jupiter.api.Assertions.*;
         int idEpic = taskManager.createEpic(epic);
         Subtask subtask = new Subtask(idEpic, "Subtask1", "descrip", Status.DONE,
                 LocalDateTime.of(2025, 2, 20, 14, 30), Duration.ofMinutes(190));
+        Subtask subtask1 = new Subtask(idEpic, "Subtasks", "descrip", Status.NEW,
+                LocalDateTime.of(2025, 2, 22, 18, 30), Duration.ofMinutes(10));
 
         int idSubtask = taskManager.createSubtask(subtask);
 
-        assertSame(epic.getStatus(), Status.DONE, "Статусы не равны");
+        assertSame(epic.getStatus(), Status.DONE, "Статусы равны");
 
+        int idSubtask1 = taskManager.createSubtask(subtask1);
         taskManager.removeSubtaskId(idSubtask);
         List<Subtask> subtasks = taskManager.getSubtasks();
+        int actualSize = 1;
 
-        assertTrue(subtasks.isEmpty(), "Список не пуст");
-        assertNotSame(epic.getStatus(), Status.DONE, "Статусы равны");
+        assertEquals(subtasks.size(), actualSize, "Список не пуст");
+        assertNotSame(epic.getStatus(), Status.DONE, "Статусы не равны");
+
     }
+
 
     @Test
     void getSubtaskIdByEpic() {

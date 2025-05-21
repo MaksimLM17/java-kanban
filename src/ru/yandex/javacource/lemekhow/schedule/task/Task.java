@@ -12,7 +12,6 @@ public class Task {
     private Status status;
     private LocalDateTime startTime;
     private Duration duration;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public Task(String name, String description, Status status) {
         this.name = name;
@@ -100,10 +99,6 @@ public class Task {
         return startTime.plus(duration);
     }
 
-    public DateTimeFormatter getFormatter() {
-        return formatter;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -119,6 +114,7 @@ public class Task {
 
     @Override
     public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         return "Task{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +

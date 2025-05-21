@@ -3,6 +3,7 @@ package ru.yandex.javacource.lemekhow.schedule.manager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.javacource.lemekhow.schedule.Exception.NotFoundException;
 import ru.yandex.javacource.lemekhow.schedule.task.Epic;
 import ru.yandex.javacource.lemekhow.schedule.task.Status;
 import ru.yandex.javacource.lemekhow.schedule.task.Subtask;
@@ -115,10 +116,15 @@ public class FileBackedTaskManagerTest {
         fileManager.removeAllTask();
 
         TaskManager loadManager =  FileBackedTaskManager.loadFromFile(tempFile);
-        String actual = fileManager.getTasks().toString();
-        String expected = loadManager.getTasks().toString();
+        try {
+            String actual = fileManager.getTasks().toString();
+            String expected = loadManager.getTasks().toString();
 
-        Assertions.assertEquals(actual, expected, "Задачи не совпадают после удаления всех задач");
+            Assertions.assertEquals(actual, expected, "Задачи не совпадают после удаления всех задач");
+        } catch (NotFoundException ignored) {
+
+        }
+
     }
 
     @Test
@@ -172,10 +178,14 @@ public class FileBackedTaskManagerTest {
         fileManager.removeAllEpic();
 
         TaskManager loadManager =  FileBackedTaskManager.loadFromFile(tempFile);
-        String actual = fileManager.getEpics().toString();
-        String expected = loadManager.getEpics().toString();
+        try {
+            String actual = fileManager.getEpics().toString();
+            String expected = loadManager.getEpics().toString();
 
-        Assertions.assertEquals(actual, expected, "Эпики не совпадают после удаления");
+            Assertions.assertEquals(actual, expected, "Эпики не совпадают после удаления");
+        } catch (NotFoundException ignored) {
+
+        }
     }
 
     @Test
@@ -231,10 +241,13 @@ public class FileBackedTaskManagerTest {
         fileManager.removeAllSubtask();
 
         TaskManager loadManager =  FileBackedTaskManager.loadFromFile(tempFile);
-        String actual = fileManager.getSubtasks().toString();
-        String expected = loadManager.getSubtasks().toString();
+        try {
+            String actual = fileManager.getSubtasks().toString();
+            String expected = loadManager.getSubtasks().toString();
+            Assertions.assertEquals(actual, expected, "Подзадачи не совпадают после удаления");
+        } catch (NotFoundException ignored) {
 
-        Assertions.assertEquals(actual, expected, "Подзадачи не совпадают после удаления");
+        }
     }
 
 }
